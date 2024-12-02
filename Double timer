@@ -1,0 +1,117 @@
+import 'dart:async';
+import 'package:flutter/material.dart';
+
+void main() {
+  runApp(MyApp());
+}
+
+class MyApp extends StatelessWidget {
+  @override
+  Widget build(BuildContext context) {
+    return MaterialApp(
+      home: DoubleTimer(),
+    );
+  }
+}
+
+class DoubleTimer extends StatefulWidget {
+  @override
+  _DoubleTimerState createState() => _DoubleTimerState();
+}
+
+class _DoubleTimerState extends State<DoubleTimer> {
+  int _seconds1 = 0;
+  int _seconds2 = 0;
+  Timer? _timer1;
+  Timer? _timer2;
+
+  void _startTimer1() {
+    _timer1 = Timer.periodic(Duration(seconds: 1), (timer) {
+      setState(() {
+        _seconds1++;
+      });
+    });
+  }
+
+  void _startTimer2() {
+    _timer2 = Timer.periodic(Duration(seconds: 1), (timer) {
+      setState(() {
+        _seconds2++;
+      });
+    });
+  }
+
+  void _stopTimer1() {
+    _timer1?.cancel();
+  }
+
+  void _stopTimer2() {
+    _timer2?.cancel();
+  }
+
+  void _resetTimer1() {
+    setState(() {
+      _seconds1 = 0;
+    });
+  }
+
+  void _resetTimer2() {
+    setState(() {
+      _seconds2 = 0;
+    });
+  }
+
+  String _formatTime(int seconds) {
+    int hours = seconds ~/ 3600;
+    int minutes = (seconds % 3600) ~/ 60;
+    int secs = seconds % 60;
+    return ('${hours.toString().padLeft(2, '0')}:${minutes.toString().padLeft(2, '0')}:${secs.toString().padLeft(2, '0')}');
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    return Scaffold(
+      appBar: AppBar(title: Text('Double Timer')),
+      body: Column(
+        mainAxisAlignment: MainAxisAlignment.center,
+        children: [
+          Transform.rotate(
+            angle: 3.14, // 180 degrees
+            child: Column(
+              children: [
+                Text('Timer 2', style: TextStyle(fontSize: 24)),
+                Text(_formatTime(_seconds2), style: TextStyle(fontSize: 40)),
+                Row(
+                  mainAxisAlignment: MainAxisAlignment.center,
+                  children: [
+                    ElevatedButton(onPressed: _startTimer2, child: Text('Start')),
+                    SizedBox(width: 10), // Spacer
+                    ElevatedButton(onPressed: _stopTimer2, child: Text('Stop')),
+                    SizedBox(width: 10), // Spacer
+                    ElevatedButton(onPressed: _resetTimer2, child: Text('Reset')),
+                  ],
+                ),
+              ],
+            ),
+          ),
+          Column(
+            children: [
+              Text('Timer 1', style: TextStyle(fontSize: 24)),
+              Text(_formatTime(_seconds1), style: TextStyle(fontSize: 40)),
+              Row(
+                mainAxisAlignment: MainAxisAlignment.center,
+                children: [
+                  ElevatedButton(onPressed: _startTimer1, child: Text('Start')),
+                  SizedBox(width: 10), // Spacer
+                  ElevatedButton(onPressed: _stopTimer1, child: Text('Stop')),
+                  SizedBox(width: 10), // Spacer
+                  ElevatedButton(onPressed: _resetTimer1, child: Text('Reset')),
+                ],
+              ),
+            ],
+          ),
+        ],
+      ),
+    );
+  }
+}
